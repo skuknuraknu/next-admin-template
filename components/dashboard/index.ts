@@ -24,3 +24,4 @@ export { SearchInput } from "./search-input";
 export { FilterDropdown } from "./filter-dropdown";
 export { SettingsForm } from "./settings-form";
 export { PageTransition } from "./page-transition";
+export { ThemeToggle } from "./theme-toggle";

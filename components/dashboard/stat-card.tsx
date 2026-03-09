@@ -1,21 +1,22 @@
 "use client";
 
 /**
- * StatCard
- * ─────────────────────────────────────────────────────────────────────────────
- * iOS-style metric widget.
+ * @file components/dashboard/stat-card.tsx
  *
- * Micro-interactions:
- *  • Card lifts 2px on hover (translateY) with a deeper shadow — via Framer Motion
- *  • Icon bubble scales up gently on card hover
- *  • Trend number uses a fast Tailwind transition when its value changes
+ * StatCard — Stripe/Linear-style metric widget.
+ *
+ * Design philosophy:
+ *  • Metric value is the largest element — clear visual hierarchy
+ *  • Icon is tiny and subdued (not a colorful bubble)
+ *  • Trend line sits quietly below — no heavy coloring
+ *  • No border-radius overkill — cards feel part of the surface
+ *  • Hover: only a very subtle shadow lift — no translateY
  */
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { LucideIcon } from "lucide-react";
+import { LucideIcon, TrendingUp, TrendingDown } from "lucide-react";
 
 interface StatCardProps extends React.HTMLAttributes<HTMLDivElement> {
     title: string;
@@ -34,54 +35,60 @@ export function StatCard({
     icon: Icon,
     trend,
     className,
-    ...props
 }: StatCardProps) {
     return (
         <motion.div
-            // Subtle lift on hover — no scale (avoids layout shift in a grid)
-            whileHover={{ y: -3, boxShadow: "0 8px 24px -4px oklch(0 0 0 / 0.10)" }}
-            whileTap={{ scale: 0.985 }}
-            transition={{ type: "spring", stiffness: 350, damping: 25 }}
-            className="cursor-default"
+            whileHover={{ boxShadow: "0 4px 16px -2px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04)" }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className={cn(
+                "group relative rounded-[var(--ios-radius-xl)] bg-card border border-border/60",
+                "shadow-sm overflow-hidden cursor-default",
+                className,
+            )}
         >
-            <Card className={cn("overflow-hidden", className)} {...props}>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <CardTitle className="text-sm font-medium text-muted-foreground">
+            <div className="px-6 pt-6 pb-5 flex flex-col gap-3">
+                {/* ── Top row: label + icon ── */}
+                <div className="flex items-center justify-between">
+                    <p className="text-sm font-medium text-muted-foreground">
                         {title}
-                    </CardTitle>
+                    </p>
+                    <Icon
+                        className="h-4 w-4 text-muted-foreground/40 group-hover:text-muted-foreground/60 transition-colors"
+                        strokeWidth={1.75}
+                    />
+                </div>
 
-                    {/* Icon bubble — scales slightly on card hover via CSS group */}
-                    <motion.div
-                        className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center"
-                        whileHover={{ scale: 1.12 }}
-                        transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                    >
-                        <Icon className="h-4 w-4 text-primary" strokeWidth={2.5} />
-                    </motion.div>
-                </CardHeader>
+                {/* ── Metric value ── */}
+                <p className="text-[2rem] font-semibold tracking-tighter text-foreground leading-none tabular-nums">
+                    {value}
+                </p>
 
-                <CardContent>
-                    <div className="text-2xl font-semibold text-foreground tracking-tight">
-                        {value}
-                    </div>
-                    {trend && (
-                        <p className="mt-2 text-xs flex items-center gap-1.5 transition-all duration-300">
-                            <span
-                                className={cn(
-                                    "font-medium tracking-wide tabular-nums",
-                                    trend.isPositive
-                                        ? "text-[var(--ios-green)]"
-                                        : "text-[var(--ios-red)]"
-                                )}
-                            >
-                                {trend.isPositive ? "+" : ""}
-                                {trend.value}%
+                {/* ── Trend ── */}
+                {trend && (
+                    <div className="flex items-center gap-1.5">
+                        {trend.isPositive ? (
+                            <TrendingUp className="h-3.5 w-3.5 text-emerald-500 shrink-0" strokeWidth={2} />
+                        ) : (
+                            <TrendingDown className="h-3.5 w-3.5 text-red-400 shrink-0" strokeWidth={2} />
+                        )}
+                        <p className="text-xs text-muted-foreground">
+                            <span className={cn(
+                                "font-semibold tabular-nums mr-1",
+                                trend.isPositive ? "text-emerald-500" : "text-red-400",
+                            )}>
+                                {trend.isPositive ? "+" : ""}{trend.value}%
                             </span>
-                            <span className="text-muted-foreground">{trend.label}</span>
+                            {trend.label}
                         </p>
-                    )}
-                </CardContent>
-            </Card>
+                    </div>
+                )}
+            </div>
+
+            {/* Subtle accent bar at the very bottom — appears on hover */}
+            <div className={cn(
+                "absolute bottom-0 left-0 right-0 h-[2px] bg-primary/0",
+                "group-hover:bg-primary/30 transition-colors duration-300",
+            )} />
         </motion.div>
     );
 }

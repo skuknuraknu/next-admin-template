@@ -78,9 +78,22 @@ export interface ActivityEvent {
 // ─── Data Tables ──────────────────────────────────────────────────────────────
 
 /**
- * Column definition for `<DataTable>`.
+ * Column definition for `<DataTable>` (TanStack Table v8 compatible).
+ *
+ * Extends `ColumnDef<TData>` with two extra fields:
+ *  - `filterOptions` — when provided, the toolbar renders a filter dropdown for this column
+ *  - `enableHiding`  — set false to prevent the column from being hidden via the visibility toggle
+ *
  * @template TData - The row data shape.
  */
+export type DataTableColumn<TData> = import("@tanstack/react-table").ColumnDef<TData> & {
+    /** Options for the per-column filter dropdown shown in the toolbar. */
+    filterOptions?: Array<{ label: string; value: string }>;
+    /** Whether this column can be hidden. Defaults to true. */
+    enableHiding?: boolean;
+};
+
+/** @deprecated Use `DataTableColumn<TData>` instead. Kept for backward compatibility. */
 export interface TableColumn<TData> {
     header: string;
     accessorKey: keyof TData;
@@ -89,6 +102,7 @@ export interface TableColumn<TData> {
     /** Extra Tailwind classes on the `<td>`, e.g. "text-right". */
     className?: string;
 }
+
 
 // ─── API / Data Fetching ──────────────────────────────────────────────────────
 

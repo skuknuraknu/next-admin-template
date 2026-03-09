@@ -75,12 +75,13 @@
    * 4. SHADOW SYSTEM
    * Apple shadows are rarely harsh. They are soft, diffused, and often layered.
    */
-  --ios-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --ios-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-  --ios-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.04);
-  --ios-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.06);
-  --ios-shadow-xl: 0 20px 48px rgba(0, 0, 0, 0.08);
-  --ios-shadow-glass: 0 4px 24px rgba(0, 0, 0, 0.04);
+  /* Shadows — near-invisible in light mode; surfaces feel weightless (Linear/Vercel style) */
+  --ios-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.03), 0 0 0 1px rgba(0, 0, 0, 0.03);
+  --ios-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03);
+  --ios-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.03);
+  --ios-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.05), 0 2px 6px rgba(0, 0, 0, 0.03);
+  --ios-shadow-xl: 0 16px 40px rgba(0, 0, 0, 0.07), 0 4px 12px rgba(0, 0, 0, 0.04);
+  --ios-shadow-glass: 0 1px 0 rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.03);
   /* For sticky/glass headers */
 
   /*
@@ -113,29 +114,42 @@
   --ios-ease-in-out: 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Dark Mode Overrides */
+/* Dark Mode Overrides — Apple iOS dark palette, no pure black */
 .dark {
-  --ios-bg-canvas: #000000;
-  /* Pure black */
-  --ios-bg-surface: #1C1C1E;
-  /* Dark gray surface */
-  --ios-bg-glass: oklch(0 0 0 / 0.7);
+  /* ── Backgrounds & Surfaces ── */
+  --ios-bg-canvas: #0F1115;
+  /* Deep neutral background — avoids harsh pure black */
+  --ios-bg-surface: #161A23;
+  /* Soft surface / cards — clearly distinct from canvas */
+  --ios-bg-glass: oklch(0.1 0.01 250 / 0.75);
 
-  --ios-text-primary: #F5F5F7;
-  --ios-text-secondary: #98989D;
-  --ios-border-soft: #333336;
-  --ios-border-medium: #48484A;
+  /* ── Text ── */
+  --ios-text-primary: #E6E8EB;
+  /* High-contrast readable white */
+  --ios-text-secondary: #9CA3AF;
+  /* Muted / helper text */
+  --ios-text-tertiary: #4B5563;
+  /* Disabled / very quiet */
 
-  --ios-blue: #0A84FF;
-  --ios-green: #30D158;
-  --ios-orange: #FF9F0A;
-  --ios-red: #FF453A;
-  --ios-purple: #BF5AF2;
+  /* ── Structural ── */
+  --ios-border-soft: #2A2F3A;
+  /* Subtle dividers */
+  --ios-border-medium: #3D4351;
+  /* Input borders, active outlines */
 
-  --ios-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --ios-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-  --ios-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
-  --ios-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
-  --ios-shadow-xl: 0 20px 48px rgba(0, 0, 0, 0.6);
-  --ios-shadow-glass: 0 4px 24px rgba(0, 0, 0, 0.5);
+  /* ── Accent Colors (iOS dark-mode variants) ── */
+  --ios-blue: #3B9EFF;
+  /* Slightly lighter for dark bg contrast */
+  --ios-green: #34D399;
+  --ios-orange: #FBBF24;
+  --ios-red: #F87171;
+  --ios-purple: #C084FC;
+
+  /* ── Shadows — refined on dark surfaces, avoid harsh outlines ── */
+  --ios-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  --ios-shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.30), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  --ios-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.40), 0 1px 4px rgba(0, 0, 0, 0.25);
+  --ios-shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.50), 0 2px 8px rgba(0, 0, 0, 0.30);
+  --ios-shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.60), 0 4px 16px rgba(0, 0, 0, 0.35);
+  --ios-shadow-glass: 0 1px 0 rgba(255, 255, 255, 0.05), 0 4px 20px rgba(0, 0, 0, 0.50);
 }

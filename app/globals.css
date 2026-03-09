@@ -82,12 +82,51 @@
 }
 
 @layer base {
+
+  /*
+   * Enables native OS scrollbar & form-control theming.
+   * ThemeProvider writes this to :root.style.colorScheme on each toggle,
+   * but we set a sensible default here as well.
+   */
+  html {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
   * {
     @apply border-border outline-ring/50;
   }
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  /*
+   * SMOOTH THEME TRANSITIONS
+   * Only animate properties that change between themes.
+   * We intentionally exclude `transform` and `opacity` to avoid
+   * interfering with Framer Motion animations.
+   */
+  *,
+  *::before,
+  *::after {
+    transition:
+      background-color 300ms ease,
+      border-color 300ms ease,
+      color 150ms ease,
+      box-shadow 300ms ease;
+  }
+
+  /*
+   * Opt-out class for elements that use Framer Motion transitions.
+   * Apply to wrappers that already handle their own timing.
+   */
+  .theme-transition-none,
+  .theme-transition-none * {
+    transition: none !important;
   }
 }
 
@@ -96,6 +135,7 @@
    Fast, subtle, and consistent — every interaction takes 150–200ms max.
 ────────────────────────────────────────────────────────────────────────── */
 @layer components {
+
   /* Button active-press: slight scale-down to feel tactile */
   button:active:not(:disabled),
   [role="button"]:active:not(:disabled) {
@@ -113,6 +153,7 @@
   .card-hover {
     transition: box-shadow 200ms ease, transform 200ms ease;
   }
+
   .card-hover:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 24px -4px oklch(0 0 0 / 0.09);
@@ -129,7 +170,9 @@
   }
 
   /* Input focus transition — ring expands smoothly */
-  input, textarea, select {
+  input,
+  textarea,
+  select {
     transition: box-shadow 180ms ease, border-color 180ms ease;
   }
 }

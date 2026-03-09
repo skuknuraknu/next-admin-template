@@ -12,3 +12,4 @@ export { useLocalStorage } from "./use-local-storage";
 export { useMediaQuery, useIsMobile, useIsTablet, usePrefersDark } from "./use-media-query";
 export { useDebounce, useDebouncedCallback } from "./use-debounce";
 export { useAsync } from "./use-async";
+export { useTheme } from "./use-theme";

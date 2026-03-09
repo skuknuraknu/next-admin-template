@@ -39,7 +39,7 @@ export function Sidebar() {
             className="flex-shrink-0 border-r border-border bg-sidebar hidden lg:flex flex-col overflow-hidden"
         >
             {/* ── Header ── */}
-            <div className="flex items-center justify-between h-16 px-4 border-b border-border bg-sidebar-accent/10 overflow-hidden">
+            <div className="flex items-center justify-between h-[76px] px-4 border-b border-border bg-sidebar-accent/10 overflow-hidden">
                 <AnimatePresence initial={false}>
                     {isOpen && (
                         <motion.div
@@ -90,7 +90,7 @@ export function Sidebar() {
                                         animate={{ opacity: 1, height: "auto" }}
                                         exit={{ opacity: 0, height: 0 }}
                                         transition={{ duration: 0.15 }}
-                                        className="px-3 text-xs font-medium uppercase tracking-wider text-muted-foreground mb-2 mt-4 overflow-hidden"
+                                        className="px-3 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50 mb-1.5 mt-5 overflow-hidden"
                                     >
                                         {group.title}
                                     </motion.p>
@@ -114,33 +114,33 @@ export function Sidebar() {
                                             key={item.href}
                                             href={item.href}
                                             className={cn(
-                                                "relative flex items-center gap-3 px-3 py-2.5 rounded-[var(--ios-radius-md)] text-sm font-medium group transition-colors duration-150",
+                                                "relative flex items-center gap-3 px-3 py-2 rounded-[var(--ios-radius-md)] text-sm font-medium group transition-colors duration-150",
                                                 isActive
-                                                    ? "text-sidebar-primary"
-                                                    : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent",
+                                                    ? "text-sidebar-primary bg-sidebar-primary/[0.06]"
+                                                    : "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/60",
                                                 !isOpen && "justify-center px-0"
                                             )}
                                             title={!isOpen ? item.label : undefined}
                                         >
-                                            {/* Active pill — shared layoutId animates between links */}
+                                            {/* Active left-indicator bar */}
                                             {isActive && (
                                                 <motion.div
-                                                    layoutId="sidebar-active-pill"
-                                                    className="absolute inset-0 rounded-[var(--ios-radius-md)] bg-sidebar-primary/10"
+                                                    layoutId="sidebar-active-indicator"
+                                                    className="absolute left-0 top-1 bottom-1 w-0.5 rounded-full bg-sidebar-primary"
                                                     transition={{ type: "spring", stiffness: 350, damping: 30 }}
                                                 />
                                             )}
 
                                             {/* Icon */}
                                             <item.icon
-                                                size={20}
+                                                size={18}
                                                 className={cn(
                                                     "shrink-0 relative z-10 transition-colors duration-150",
                                                     isActive
                                                         ? "text-sidebar-primary"
-                                                        : "text-muted-foreground group-hover:text-sidebar-foreground"
+                                                        : "text-muted-foreground/60 group-hover:text-sidebar-foreground"
                                                 )}
-                                                strokeWidth={isActive ? 2.5 : 2}
+                                                strokeWidth={isActive ? 2 : 1.75}
                                             />
 
                                             {/* Label — fades in/out with sidebar */}
@@ -168,7 +168,7 @@ export function Sidebar() {
                                                         animate={{ opacity: 1, scale: 1 }}
                                                         exit={{ opacity: 0, scale: 0.7 }}
                                                         transition={{ duration: 0.15 }}
-                                                        className="ml-auto bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 rounded-full font-bold relative z-10"
+                                                        className="ml-auto bg-muted text-muted-foreground text-[10px] px-1.5 py-0.5 rounded-full font-semibold tabular-nums relative z-10"
                                                     >
                                                         {item.badge}
                                                     </motion.span>

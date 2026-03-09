@@ -3,18 +3,11 @@
  *
  * `PageHeader` — Consistent title/description/actions header for every page.
  *
- * ─── USAGE ───────────────────────────────────────────────────────────────────
- *   import { PageHeader } from "@/components/dashboard";
- *
- *   <PageHeader
- *     title="Users"
- *     description="Manage team members and their permissions."
- *     actions={<Button>Add User</Button>}
- *   />
- *
- *   // Minimal (heading only)
- *   <PageHeader title="Settings" />
- * ─────────────────────────────────────────────────────────────────────────────
+ * Design (Notion/Linear-style):
+ *  • Title is the largest typographic element on the page
+ *  • Subtitle is small and quiet — muted foreground
+ *  • A hairline separator below grounds the header
+ *  • Actions slot sits at the trailing edge
  */
 
 "use client";
@@ -39,26 +32,25 @@ export function PageHeader({
     ...props
 }: PageHeaderProps) {
     return (
-        <div
-            className={cn("flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8", className)}
-            {...props}
-        >
-            <div className="space-y-1">
-                <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
-                    {title}
-                </h1>
-                {description && (
-                    <p className="text-sm text-muted-foreground">
-                        {description}
-                    </p>
+        <div className={cn("mb-8 md:mb-10", className)} {...props}>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between pb-6 border-b border-border/50">
+                <div className="space-y-1 min-w-0">
+                    <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+                        {title}
+                    </h1>
+                    {description && (
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                            {description}
+                        </p>
+                    )}
+                </div>
+
+                {actions && (
+                    <div className="flex items-center gap-2 shrink-0">
+                        {actions}
+                    </div>
                 )}
             </div>
-
-            {actions && (
-                <div className="flex items-center gap-3">
-                    {actions}
-                </div>
-            )}
         </div>
     );
 }

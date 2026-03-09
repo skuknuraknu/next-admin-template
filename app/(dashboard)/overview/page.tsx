@@ -10,10 +10,12 @@ import {
     RefreshCw,
     Bell,
     Shield,
+    ArrowUpRight,
 } from "lucide-react";
-import { PageHeader, StatCard, ActivityFeed, DataTable, PageTransition } from "@/components/dashboard";
+import { PageHeader, StatCard, ActivityFeed, PageTransition } from "@/components/dashboard";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
 
 // ─── Mock Data ────────────────────────────────────────────────────────────────
 
@@ -44,7 +46,6 @@ const STATS = [
     },
 ];
 
-// Weekly revenue data for the sparkline chart (Sun → Sat)
 const CHART_DATA = [
     { day: "Sun", revenue: 4200 },
     { day: "Mon", revenue: 6800 },
@@ -56,55 +57,11 @@ const CHART_DATA = [
 ];
 
 const RECENT_ACTIVITIES = [
-    {
-        id: 1,
-        user: "Sarah Jenkins",
-        action: "deployed a new release to",
-        target: "Production",
-        timestamp: "4m ago",
-        icon: RefreshCw,
-        iconBgColor: "bg-blue-500/10",
-        iconColor: "text-blue-500",
-    },
-    {
-        id: 2,
-        user: "Marcus Chen",
-        action: "invited 3 users to",
-        target: "Workspace Alpha",
-        timestamp: "28m ago",
-        icon: UserPlus,
-        iconBgColor: "bg-purple-500/10",
-        iconColor: "text-purple-500",
-    },
-    {
-        id: 3,
-        user: "System",
-        action: "completed nightly database backup",
-        timestamp: "1h ago",
-        icon: Shield,
-        iconBgColor: "bg-emerald-500/10",
-        iconColor: "text-emerald-500",
-    },
-    {
-        id: 4,
-        user: "Emily Watson",
-        action: "raised a new alert on",
-        target: "API Gateway",
-        timestamp: "2h ago",
-        icon: Bell,
-        iconBgColor: "bg-amber-500/10",
-        iconColor: "text-amber-500",
-    },
-    {
-        id: 5,
-        user: "Chloe Dumont",
-        action: "completed order",
-        target: "#ORD-9021",
-        timestamp: "3h ago",
-        icon: ShoppingCart,
-        iconBgColor: "bg-rose-500/10",
-        iconColor: "text-rose-500",
-    },
+    { id: 1, user: "Sarah Jenkins", action: "deployed a new release to", target: "Production", timestamp: "4 minutes ago", icon: RefreshCw },
+    { id: 2, user: "Marcus Chen", action: "invited 3 users to", target: "Workspace Alpha", timestamp: "28 minutes ago", icon: UserPlus },
+    { id: 3, user: "System", action: "completed nightly database backup", timestamp: "1 hour ago", icon: Shield },
+    { id: 4, user: "Emily Watson", action: "raised a new alert on", target: "API Gateway", timestamp: "2 hours ago", icon: Bell },
+    { id: 5, user: "Chloe Dumont", action: "completed order", target: "#ORD-9021", timestamp: "3 hours ago", icon: ShoppingCart },
 ];
 
 const RECENT_USERS = [
@@ -117,16 +74,16 @@ const RECENT_USERS = [
     { id: "7", name: "Chloe Dumont", email: "chloe@acme.com", plan: "Pro", joined: "Mar 4, 2026", status: "Active" },
 ];
 
-// ─── Inline SVG Sparkline Chart ───────────────────────────────────────────────
+// ─── SVG Chart ────────────────────────────────────────────────────────────────
 
 function AnalyticsChart() {
     const W = 600;
-    const H = 180;
-    const PAD = { top: 20, right: 20, bottom: 36, left: 52 };
+    const H = 160;
+    const PAD = { top: 12, right: 12, bottom: 32, left: 44 };
 
     const values = CHART_DATA.map((d) => d.revenue);
-    const min = Math.min(...values);
-    const max = Math.max(...values);
+    const min = Math.min(...values) * 0.9;
+    const max = Math.max(...values) * 1.05;
     const range = max - min || 1;
 
     const chartW = W - PAD.left - PAD.right;
@@ -136,94 +93,45 @@ function AnalyticsChart() {
     const toX = (i: number) => PAD.left + i * xStep;
     const toY = (v: number) => PAD.top + chartH - ((v - min) / range) * chartH;
 
-    // Build SVG polyline points
     const points = CHART_DATA.map((d, i) => `${toX(i)},${toY(d.revenue)}`).join(" ");
-
-    // Build the closed fill path (area under the curve)
     const fillPath =
         `M ${toX(0)},${toY(CHART_DATA[0].revenue)} ` +
         CHART_DATA.map((d, i) => `L ${toX(i)},${toY(d.revenue)}`).join(" ") +
         ` L ${toX(CHART_DATA.length - 1)},${H - PAD.bottom} L ${PAD.left},${H - PAD.bottom} Z`;
 
-    // Y-axis guide values (3 levels)
-    const yTicks = [min, (min + max) / 2, max].map((v) => ({
-        value: `$${(v / 1000).toFixed(1)}k`,
-        y: toY(v),
-    }));
+    const yTicks = [
+        { value: `$${(min / 1000).toFixed(0)}k`, y: toY(min) },
+        { value: `$${((min + max) / 2000).toFixed(1)}k`, y: toY((min + max) / 2) },
+        { value: `$${(max / 1000).toFixed(0)}k`, y: toY(max) },
+    ];
 
     return (
-        <svg
-            viewBox={`0 0 ${W} ${H}`}
-            className="w-full h-full"
-            aria-label="Weekly revenue analytics chart"
-        >
+        <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-full" aria-label="Weekly revenue chart">
             <defs>
-                {/* The gradient fill under the line */}
-                <linearGradient id="area-gradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.15" />
+                <linearGradient id="ag" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.10" />
                     <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0" />
                 </linearGradient>
             </defs>
-
-            {/* Horizontal grid lines */}
             {yTicks.map((t) => (
                 <g key={t.value}>
-                    <line
-                        x1={PAD.left}
-                        y1={t.y}
-                        x2={W - PAD.right}
-                        y2={t.y}
-                        stroke="var(--color-border)"
-                        strokeDasharray="4 4"
-                        strokeWidth={1}
-                    />
-                    <text
-                        x={PAD.left - 8}
-                        y={t.y + 4}
-                        textAnchor="end"
-                        fontSize={11}
-                        fill="var(--color-muted-foreground)"
-                        fontFamily="var(--font-sans)"
-                    >
+                    <line x1={PAD.left} y1={t.y} x2={W - PAD.right} y2={t.y}
+                        stroke="var(--color-border)" strokeDasharray="3 3" strokeWidth={0.75} strokeOpacity={0.6} />
+                    <text x={PAD.left - 6} y={t.y + 4} textAnchor="end" fontSize={10}
+                        fill="var(--color-muted-foreground)" fontFamily="var(--font-sans)" opacity={0.7}>
                         {t.value}
                     </text>
                 </g>
             ))}
-
-            {/* Area fill */}
-            <path d={fillPath} fill="url(#area-gradient)" />
-
-            {/* The main sparkline */}
-            <polyline
-                points={points}
-                fill="none"
-                stroke="var(--color-primary)"
-                strokeWidth={2.5}
-                strokeLinejoin="round"
-                strokeLinecap="round"
-            />
-
-            {/* X-axis labels + data dots */}
+            <path d={fillPath} fill="url(#ag)" />
+            <polyline points={points} fill="none" stroke="var(--color-primary)" strokeWidth={2}
+                strokeLinejoin="round" strokeLinecap="round" />
             {CHART_DATA.map((d, i) => (
                 <g key={d.day}>
-                    {/* Dot */}
-                    <circle
-                        cx={toX(i)}
-                        cy={toY(d.revenue)}
-                        r={4}
-                        fill="var(--color-primary)"
-                        stroke="var(--color-card)"
-                        strokeWidth={2}
-                    />
-                    {/* Day label */}
-                    <text
-                        x={toX(i)}
-                        y={H - PAD.bottom + 20}
-                        textAnchor="middle"
-                        fontSize={11}
-                        fill="var(--color-muted-foreground)"
-                        fontFamily="var(--font-sans)"
-                    >
+                    <circle cx={toX(i)} cy={toY(d.revenue)} r={3.5} fill="var(--color-primary)"
+                        stroke="var(--color-card)" strokeWidth={2} />
+                    <text x={toX(i)} y={H - PAD.bottom + 16} textAnchor="middle" fontSize={10}
+                        fill="var(--color-muted-foreground)" fontFamily="var(--font-sans)" opacity={0.7}>
                         {d.day}
                     </text>
                 </g>
@@ -232,73 +140,79 @@ function AnalyticsChart() {
     );
 }
 
-// ─── Status Badge ─────────────────────────────────────────────────────────────
+// ─── Badges ───────────────────────────────────────────────────────────────────
 
-function StatusBadge({ status }: { status: string }) {
-    const styles: Record<string, string> = {
-        Active: "bg-emerald-500/10 text-emerald-600",
-        Invited: "bg-blue-500/10 text-blue-600",
-        Suspended: "bg-muted text-muted-foreground",
-    };
+function StatusDot({ status }: { status: string }) {
     return (
-        <span
-            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${styles[status] ?? styles.Suspended
-                }`}
-        >
-            {status}
+        <span className="flex items-center gap-1.5">
+            <span className={cn(
+                "inline-block h-1.5 w-1.5 rounded-full shrink-0",
+                status === "Active" && "bg-emerald-500",
+                status === "Invited" && "bg-blue-400",
+                status === "Suspended" && "bg-muted-foreground/40",
+            )} />
+            <span className={cn(
+                "text-sm",
+                status === "Active" && "text-foreground",
+                status === "Invited" && "text-muted-foreground",
+                status === "Suspended" && "text-muted-foreground/60",
+            )}>
+                {status}
+            </span>
         </span>
     );
 }
 
-// ─── Plan Badge ───────────────────────────────────────────────────────────────
-
-function PlanBadge({ plan }: { plan: string }) {
+function PlanTag({ plan }: { plan: string }) {
     const styles: Record<string, string> = {
-        Business: "bg-purple-500/10 text-purple-600",
-        Pro: "bg-amber-500/10 text-amber-600",
-        Starter: "bg-sky-500/10 text-sky-600",
-        Free: "bg-muted text-muted-foreground",
+        Business: "text-purple-600 dark:text-purple-400",
+        Pro: "text-amber-600 dark:text-amber-400",
+        Starter: "text-sky-600 dark:text-sky-400",
+        Free: "text-muted-foreground",
     };
     return (
-        <span
-            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${styles[plan] ?? styles.Free
-                }`}
-        >
+        <span className={cn("text-sm font-medium", styles[plan] ?? "text-muted-foreground")}>
             {plan}
         </span>
     );
 }
 
-// ─── Section Card Wrapper ─────────────────────────────────────────────────────
-// A lightweight iOS-widget-style card wrapper used throughout the page
+// ─── Section wrapper ──────────────────────────────────────────────────────────
 
-function Card({
+function SectionCard({
     title,
     subtitle,
+    action,
     children,
-    className = "",
+    className,
+    noPadding,
 }: {
     title?: string;
     subtitle?: string;
+    action?: React.ReactNode;
     children: React.ReactNode;
     className?: string;
+    noPadding?: boolean;
 }) {
     return (
-        <div
-            className={`rounded-[var(--ios-radius-xl)] border border-border bg-card shadow-sm overflow-hidden ${className}`}
-        >
+        <div className={cn(
+            "rounded-[var(--ios-radius-xl)] border border-border/60 bg-card shadow-sm overflow-hidden",
+            className,
+        )}>
             {(title || subtitle) && (
-                <div className="px-6 pt-6 pb-4 flex items-start justify-between">
-                    <div>
+                <div className={cn(
+                    "flex items-start justify-between",
+                    noPadding ? "px-6 pt-5 pb-4" : "px-6 pt-5 pb-4",
+                )}>
+                    <div className="space-y-0.5">
                         {title && (
-                            <h2 className="text-base font-semibold tracking-tight text-foreground">
-                                {title}
-                            </h2>
+                            <h2 className="text-sm font-semibold text-foreground">{title}</h2>
                         )}
                         {subtitle && (
-                            <p className="text-sm text-muted-foreground mt-0.5">{subtitle}</p>
+                            <p className="text-xs text-muted-foreground">{subtitle}</p>
                         )}
                     </div>
+                    {action}
                 </div>
             )}
             {children}
@@ -315,17 +229,22 @@ export default function OverviewPage() {
             {/* ── Page Header ── */}
             <PageHeader
                 title="Dashboard"
-                description="Good morning — here's what's happening with your workspace today."
+                description="Here's what's happening in your workspace today."
                 actions={
-                    <Button className="rounded-[var(--ios-radius-full)] shadow-sm font-medium px-5">
-                        Download Report
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="rounded-[var(--ios-radius-full)] gap-1.5 text-sm font-medium"
+                    >
+                        <ArrowUpRight className="h-3.5 w-3.5" />
+                        Export
                     </Button>
                 }
             />
 
-            {/* ── Section 1: Stats Overview ── 4-column widget row */}
-            <section aria-label="Stats overview" className="space-y-0">
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+            {/* ── Stats ── */}
+            <section aria-label="Stats overview">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
                     {STATS.map((stat) => (
                         <StatCard
                             key={stat.title}
@@ -338,106 +257,98 @@ export default function OverviewPage() {
                 </div>
             </section>
 
-            {/* ── Section 2: Analytics Chart + Recent Activity ── 3-column grid */}
+            {/* ── Chart + Activity ── */}
             <section
                 aria-label="Analytics and activity"
-                className="grid grid-cols-1 gap-6 lg:grid-cols-3"
+                className="grid grid-cols-1 gap-4 lg:grid-cols-3"
             >
-
-                {/* Analytics Chart — spans 2 columns on large screens */}
-                <Card
-                    title="Revenue Analytics"
-                    subtitle="Weekly revenue · current week"
+                {/* Revenue chart — spans 2/3 */}
+                <SectionCard
                     className="lg:col-span-2"
+                    action={
+                        <div className="flex items-baseline gap-2">
+                            <span className="text-2xl font-semibold tracking-tighter text-foreground tabular-nums">$53,900</span>
+                            <span className="text-xs text-emerald-500 font-semibold">+14.2%</span>
+                        </div>
+                    }
+                    title="Revenue"
+                    subtitle="Weekly · current week"
                 >
-                    {/* Chart Summary Row */}
-                    <div className="px-6 pb-2 flex items-end gap-6 border-b border-border/50">
-                        <div>
-                            <p className="text-3xl font-bold tracking-tighter text-foreground">
-                                $53,900
-                            </p>
-                            <p className="text-sm text-muted-foreground mt-0.5">Total this week</p>
-                        </div>
-                        <div className="flex items-center gap-1.5 mb-1 text-emerald-500 text-sm font-semibold">
-                            <TrendingUp className="h-4 w-4" />
-                            +14.2% vs last week
-                        </div>
-                    </div>
-
-                    {/* SVG Chart Area */}
-                    <div className="px-4 py-5">
+                    <div className="px-4 pb-4 h-44">
                         <AnalyticsChart />
                     </div>
-                </Card>
+                </SectionCard>
 
-                {/* Recent Activity Feed — spans 1 column */}
-                <Card title="Recent Activity" subtitle="Latest events across your workspace">
-                    <div className="px-6 pb-6">
+                {/* Activity — spans 1/3 */}
+                <SectionCard title="Activity" subtitle="Recent workspace events">
+                    <div className="px-5 pb-5">
                         <ActivityFeed activities={RECENT_ACTIVITIES} />
                     </div>
-                </Card>
+                </SectionCard>
             </section>
 
-            {/* ── Section 3: Recent Users Table ── full width */}
+            {/* ── Recent Users ── */}
             <section aria-label="Recent users">
-                <Card title="Recent Users" subtitle="Newly registered accounts" className="card-hover">
-                    <DataTable
-                        data={RECENT_USERS}
-                        keyExtractor={(u) => u.id}
-                        className="border-0 shadow-none rounded-none"
-                        columns={[
-                            {
-                                header: "User",
-                                accessorKey: "name",
-                                cell: (user) => (
-                                    <div className="flex items-center gap-3 py-1">
-                                        <Avatar className="h-8 w-8 shrink-0">
-                                            <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
-                                                {user.name
-                                                    .split(" ")
-                                                    .map((n: string) => n[0])
-                                                    .join("")}
-                                            </AvatarFallback>
-                                        </Avatar>
-                                        <div className="flex flex-col leading-tight">
-                                            <span className="font-medium text-foreground text-sm">
-                                                {user.name}
-                                            </span>
-                                            <span className="text-xs text-muted-foreground">
-                                                {user.email}
-                                            </span>
-                                        </div>
+                <SectionCard
+                    title="Recent Users"
+                    subtitle="Newly joined accounts"
+                    noPadding
+                    action={
+                        <Button variant="ghost" size="sm" className="h-7 px-2.5 text-xs text-muted-foreground rounded-[var(--ios-radius-md)]">
+                            View all →
+                        </Button>
+                    }
+                >
+                    {/* Table */}
+                    <div className="border-t border-border/40">
+                        {/* Header row */}
+                        <div className="grid grid-cols-[1fr_100px_120px_100px_60px] px-6 py-2.5 border-b border-border/40">
+                            {["User", "Plan", "Joined", "Status", ""].map((h) => (
+                                <span key={h} className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+                                    {h}
+                                </span>
+                            ))}
+                        </div>
+                        {/* Data rows */}
+                        {RECENT_USERS.map((user) => (
+                            <div
+                                key={user.id}
+                                className="grid grid-cols-[1fr_100px_120px_100px_60px] px-6 py-3.5 border-b border-border/30 last:border-0 hover:bg-muted/30 transition-colors group"
+                            >
+                                {/* User */}
+                                <div className="flex items-center gap-3 min-w-0">
+                                    <Avatar className="h-7 w-7 shrink-0">
+                                        <AvatarFallback className="bg-muted text-muted-foreground text-[10px] font-semibold">
+                                            {user.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                    <div className="flex flex-col leading-snug min-w-0">
+                                        <span className="text-sm font-medium text-foreground truncate">{user.name}</span>
+                                        <span className="text-xs text-muted-foreground truncate">{user.email}</span>
                                     </div>
-                                ),
-                            },
-                            {
-                                header: "Plan",
-                                accessorKey: "plan",
-                                cell: (user) => <PlanBadge plan={user.plan} />,
-                            },
-                            {
-                                header: "Joined",
-                                accessorKey: "joined",
-                                className: "text-muted-foreground",
-                            },
-                            {
-                                header: "Status",
-                                accessorKey: "status",
-                                cell: (user) => <StatusBadge status={user.status} />,
-                            },
-                            {
-                                header: "",
-                                accessorKey: "id",
-                                cell: () => (
-                                    <button className="text-xs text-muted-foreground/60 hover:text-foreground transition-colors font-medium pr-2">
+                                </div>
+                                {/* Plan */}
+                                <div className="flex items-center">
+                                    <PlanTag plan={user.plan} />
+                                </div>
+                                {/* Joined */}
+                                <div className="flex items-center">
+                                    <span className="text-sm text-muted-foreground tabular-nums">{user.joined}</span>
+                                </div>
+                                {/* Status */}
+                                <div className="flex items-center">
+                                    <StatusDot status={user.status} />
+                                </div>
+                                {/* Action */}
+                                <div className="flex items-center justify-end">
+                                    <button className="text-xs text-muted-foreground/40 hover:text-foreground transition-colors opacity-0 group-hover:opacity-100">
                                         View →
                                     </button>
-                                ),
-                                className: "text-right",
-                            },
-                        ]}
-                    />
-                </Card>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </SectionCard>
             </section>
 
         </PageTransition>
