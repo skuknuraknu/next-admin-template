@@ -1,26 +1,135 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "../styles/tokens.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
+/* 
+ * TAILWIND V4 THEME CONFIGURATION
+ * We map our iOS tokens into Tailwind's utility classes here.
+ */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Map iOS semantic colors to Shadcn semantic variable names */
+  --color-background: var(--ios-bg-canvas);
+  --color-foreground: var(--ios-text-primary);
+
+  /* Card / Surface */
+  --color-card: var(--ios-bg-surface);
+  --color-card-foreground: var(--ios-text-primary);
+
+  /* Popover */
+  --color-popover: var(--ios-bg-surface);
+  --color-popover-foreground: var(--ios-text-primary);
+
+  /* Primary Action */
+  --color-primary: var(--ios-blue);
+  --color-primary-foreground: #FFFFFF;
+
+  /* Secondary / Subdued Action */
+  --color-secondary: var(--ios-bg-canvas);
+  --color-secondary-foreground: var(--ios-text-primary);
+
+  /* Muted / Soft backgrounds (skeleton loaders, quiet tabs) */
+  --color-muted: var(--ios-bg-canvas);
+  --color-muted-foreground: var(--ios-text-secondary);
+
+  /* Borders & Inputs */
+  --color-border: var(--ios-border-soft);
+  --color-input: var(--ios-border-medium);
+  --color-ring: var(--ios-blue);
+
+  /* Destructive */
+  --color-destructive: var(--ios-red);
+  --color-destructive-foreground: #FFFFFF;
+
+  /* Accent (hover states for items like DropdownMenu) */
+  --color-accent: var(--ios-bg-canvas);
+  --color-accent-foreground: var(--ios-text-primary);
+
+  /* Typography */
+  --font-sans: var(--font-inter);
+
+  /* Map Radius */
+  --radius-sm: var(--ios-radius-sm);
+  /* 8px */
+  --radius-md: var(--ios-radius-md);
+  /* 12px */
+  --radius-lg: var(--ios-radius-lg);
+  /* 16px */
+  --radius-xl: var(--ios-radius-xl);
+  /* 20px */
+  --radius: var(--ios-radius-md);
+  /* Default Shadcn fallback */
+
+  /* Map Shadows into standard tailwind shadow-* classes */
+  --shadow-xs: var(--ios-shadow-xs);
+  --shadow-sm: var(--ios-shadow-sm);
+  --shadow-md: var(--ios-shadow-md);
+  --shadow-lg: var(--ios-shadow-lg);
+  --shadow-xl: var(--ios-shadow-xl);
+  --shadow-glass: var(--ios-shadow-glass);
+
+  /* Sidebar Specific mapping */
+  --color-sidebar: var(--ios-bg-surface);
+  --color-sidebar-foreground: var(--ios-text-primary);
+  --color-sidebar-primary: var(--ios-blue);
+  --color-sidebar-primary-foreground: #FFFFFF;
+  --color-sidebar-accent: var(--ios-bg-canvas);
+  --color-sidebar-accent-foreground: var(--ios-text-primary);
+  --color-sidebar-border: var(--ios-border-soft);
+  --color-sidebar-ring: var(--ios-blue);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ──────────────────────────────────────────────────────────────────────────
+   GLOBAL MICRO-INTERACTIONS
+   Fast, subtle, and consistent — every interaction takes 150–200ms max.
+────────────────────────────────────────────────────────────────────────── */
+@layer components {
+  /* Button active-press: slight scale-down to feel tactile */
+  button:active:not(:disabled),
+  [role="button"]:active:not(:disabled) {
+    transform: scale(0.96);
+    transition: transform 100ms ease;
+  }
+
+  /* Override for ghost/link buttons — even lighter press */
+  button[data-variant="ghost"]:active,
+  button[data-variant="link"]:active {
+    transform: scale(0.98);
+  }
+
+  /* Card hover — gentle lift with a softened shadow */
+  .card-hover {
+    transition: box-shadow 200ms ease, transform 200ms ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px -4px oklch(0 0 0 / 0.09);
+  }
+
+  /* Interactive table row hover */
+  tr.interactive {
+    transition: background-color 150ms ease;
+  }
+
+  /* Link transitions — color & opacity fade cleanly */
+  a {
+    transition: color 150ms ease, opacity 150ms ease;
+  }
+
+  /* Input focus transition — ring expands smoothly */
+  input, textarea, select {
+    transition: box-shadow 180ms ease, border-color 180ms ease;
+  }
 }

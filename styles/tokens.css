@@ -1,0 +1,141 @@
+/**
+ * Apple/iOS Inspired Design Tokens
+ * ─────────────────────────────────────────────────────────────
+ * Defines the pristine, calm aesthetic core of the dashboard.
+ * - Colors: Soft neutral backgrounds, pure white cards, vibrant pure accents.
+ * - Radius: Smooth, continuous curves (12px, 16px, 20px).
+ * - Shadows: Soft, diffused, layered box-shadows.
+ * - Spacing: Generous padding for large touch/click targets.
+ */
+
+:root {
+  /* 
+   * 1. COLOR PALETTE 
+   * Apple's palette relies on a highly neutral canvas (F5F5F7) 
+   * against pure white (FFFFFF) surfaces, letting pure vibrant 
+   * accents command attention.
+   */
+
+  /* Backgrounds & Surfaces */
+  --ios-bg-canvas: #F5F5F7;
+  /* Apple light gray canvas */
+  --ios-bg-surface: #FFFFFF;
+  /* Pure white cards */
+  --ios-bg-glass: oklch(1 0 0 / 0.7);
+  /* Translucent white for blur */
+
+  /* Text & Typography */
+  --ios-text-primary: #1D1D1F;
+  /* Almost black */
+  --ios-text-secondary: #86868B;
+  /* Apple system gray - readable muted */
+  --ios-text-tertiary: #D2D2D7;
+  /* Very light gray for disabled */
+
+  /* Structural */
+  --ios-border-soft: #E5E5EA;
+  /* Subtle dividing lines */
+  --ios-border-medium: #C7C7CC;
+  /* Inputs, active borders */
+
+  /* Accent Colors (System iOS Colors) */
+  --ios-blue: #007AFF;
+  /* Primary action */
+  --ios-green: #34C759;
+  /* Success */
+  --ios-orange: #FF9500;
+  /* Warning */
+  --ios-red: #FF3B30;
+  /* Destructive */
+  --ios-purple: #AF52DE;
+  /* Special */
+
+  /*
+   * 2. TYPOGRAPHY SCALE
+   * Clean, highly readable. We use Inter, but map it closely to SF conventions.
+   */
+  --font-inter: "Inter", sans-serif;
+
+  /* 
+   * 3. BORDER RADIUS
+   * Generous, continuous curves.
+   */
+  --ios-radius-sm: 0.5rem;
+  /* 8px   - Badges, small inputs */
+  --ios-radius-md: 0.75rem;
+  /* 12px  - Standard buttons, small cards */
+  --ios-radius-lg: 1rem;
+  /* 16px  - Standard cards, dropdowns */
+  --ios-radius-xl: 1.25rem;
+  /* 20px  - Modals, large surface areas */
+  --ios-radius-full: 9999px;
+  /* Pills, avatars */
+
+  /* 
+   * 4. SHADOW SYSTEM
+   * Apple shadows are rarely harsh. They are soft, diffused, and often layered.
+   */
+  --ios-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --ios-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --ios-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.04);
+  --ios-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.06);
+  --ios-shadow-xl: 0 20px 48px rgba(0, 0, 0, 0.08);
+  --ios-shadow-glass: 0 4px 24px rgba(0, 0, 0, 0.04);
+  /* For sticky/glass headers */
+
+  /*
+   * 5. SPACING & LAYOUT
+   */
+  --ios-space-xs: 0.25rem;
+  /* 4px */
+  --ios-space-sm: 0.5rem;
+  /* 8px */
+  --ios-space-md: 1rem;
+  /* 16px */
+  --ios-space-lg: 1.5rem;
+  /* 24px */
+  --ios-space-xl: 2rem;
+  /* 32px */
+  --ios-space-2xl: 3rem;
+  /* 48px */
+
+  --ios-view-padding: 2rem;
+  /* Standard page padding */
+  --ios-card-padding: 1.5rem;
+  /* Internal card padding */
+
+  /* 
+   * 6. TRANSITIONS
+   * Smooth, deliberate micro-interactions.
+   */
+  --ios-spring-fast: 150ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ios-spring-base: 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ios-ease-in-out: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dark Mode Overrides */
+.dark {
+  --ios-bg-canvas: #000000;
+  /* Pure black */
+  --ios-bg-surface: #1C1C1E;
+  /* Dark gray surface */
+  --ios-bg-glass: oklch(0 0 0 / 0.7);
+
+  --ios-text-primary: #F5F5F7;
+  --ios-text-secondary: #98989D;
+  --ios-border-soft: #333336;
+  --ios-border-medium: #48484A;
+
+  --ios-blue: #0A84FF;
+  --ios-green: #30D158;
+  --ios-orange: #FF9F0A;
+  --ios-red: #FF453A;
+  --ios-purple: #BF5AF2;
+
+  --ios-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --ios-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --ios-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --ios-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
+  --ios-shadow-xl: 0 20px 48px rgba(0, 0, 0, 0.6);
+  --ios-shadow-glass: 0 4px 24px rgba(0, 0, 0, 0.5);
+}

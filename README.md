@@ -1,36 +1,116 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AdminKit — Modern SaaS Admin Dashboard
+
+A professional, production-ready admin dashboard template built with **Next.js 16**, **React Server Components**, **TypeScript**, **TailwindCSS v4**, **Shadcn UI**, and **Lucide Icons**.
+
+---
+
+## Folder Structure
+
+```
+my-admin/
+│
+├── app/                          Next.js App Router
+│   ├── (auth)/                   Route group — unauthenticated screens
+│   │   └── login/page.tsx        Login page
+│   ├── (dashboard)/              Route group — protected admin area
+│   │   ├── layout.tsx            Persistent shell (sidebar + topbar)
+│   │   ├── page.tsx              Root redirect → /overview
+│   │   ├── overview/page.tsx     Dashboard home
+│   │   ├── analytics/page.tsx    Analytics & metrics
+│   │   ├── users/page.tsx        User management
+│   │   └── settings/page.tsx     Settings hub
+│   ├── layout.tsx                Root layout (font, metadata, tokens)
+│   └── globals.css               Tailwind base + Shadcn CSS variables
+│
+├── components/
+│   ├── ui/                       Shadcn UI primitives (added via CLI)
+│   └── dashboard/                Domain-specific components (Sidebar, Topbar, …)
+│       └── index.ts              Barrel export
+│
+├── lib/
+│   ├── utils.ts                  cn() helper — clsx + tailwind-merge
+│   ├── constants.ts              Navigation definitions, app metadata
+│   └── index.ts                  Barrel export
+│
+├── hooks/
+│   ├── use-sidebar.ts            Sidebar open/collapsed state (localStorage)
+│   └── index.ts                  Barrel export
+│
+├── styles/
+│   └── tokens.css                Custom design tokens (colors, radius, shadows, spacing)
+│
+├── public/                       Static assets
+│
+├── components.json               Shadcn UI configuration
+├── next.config.ts                Next.js configuration
+├── tsconfig.json                 TypeScript config (@/* path alias)
+└── package.json
+```
+
+---
+
+## Design Principles
+
+- **Apple / iOS aesthetic** — soft colors, generous whitespace, rounded corners
+- **Minimal cognitive load** — clear hierarchy, consistent spacing
+- **Server-first** — all components are RSC by default; `"use client"` only where needed
+- **Scalable** — grouped navigation, barrel exports, and separation of concerns baked in from day one
+
+---
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+# Install dependencies
+npm install
+
+# Run the dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Adding Shadcn Components
 
-## Learn More
+```bash
+npx shadcn@canary add button
+npx shadcn@canary add card
+npx shadcn@canary add input
+```
 
-To learn more about Next.js, take a look at the following resources:
+Components are added to `components/ui/` and immediately available via `@/components/ui`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Design Tokens
 
-## Deploy on Vercel
+Custom tokens are defined in `styles/tokens.css` and imported globally. Use them anywhere:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```css
+/* spacing */
+var(--admin-space-page-x)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+/* shadows */
+var(--admin-shadow-md)
+
+/* transitions */
+var(--admin-transition-base)
+
+/* accent colors */
+var(--admin-accent-blue)
+```
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 16 (App Router) |
+| Language | TypeScript 5 |
+| Styling | TailwindCSS v4 |
+| Components | Shadcn UI (canary) |
+| Icons | Lucide React |
+| Fonts | Inter (Google Fonts via next/font) |
