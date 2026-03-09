@@ -57,6 +57,10 @@ my-admin/
 - **Scalable** — grouped navigation, barrel exports, and separation of concerns baked in from day one
 
 ---
+## Screenshots
+<img width="1919" height="904" alt="image" src="https://github.com/user-attachments/assets/91918f7e-e021-4f23-8284-5a0aa9d7100b" />
+<img width="1917" height="894" alt="image" src="https://github.com/user-attachments/assets/0df8822d-62d0-4a49-ba00-628f6f3dfab8" />
+
 
 ## Getting Started
 
